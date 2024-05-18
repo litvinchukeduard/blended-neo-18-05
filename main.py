@@ -5,6 +5,7 @@
 class Character:
     def __init__(self, name, health=100):
         self.name = name
+        # self._health = Character.limit_health_amount(health)
         self.health = health
         self.inventory = []
         self._weapon = None
@@ -24,8 +25,23 @@ class Character:
         #     if item.name == weapon_name:
         #         self._weapon = item
 
+    # @staticmethod
+    # def limit_health_amount(amount):
+    #     return min(amount, 100)
+    # @classmethod
+
+    @property
+    def health(self):
+        return self._health
+
+    @health.setter
+    def health(self, amount):
+        # if amount > 100:
+        #     amount = 100
+        self._health = min(amount, 100)
+
     def add_health(self, amount):
-        self.health += amount
+        self._health += amount
 
     def subtract_health(self, amount):
         self.health -= amount
@@ -73,24 +89,34 @@ class Potion(InventoryItem):
 
 
 if __name__ == '__main__':
+    print('Create items')
     item_one = InventoryItem('Sword')
     print(item_one.name)
 
     item_one.name = 'Shield'
     print(item_one.name)
 
-    character = Character('Hero')
+    print('\nCreate hero and set health')
+    character_one = Character('Hero')
+    print(character_one.health)
+    character_one.health = 120
+    print(character_one.health)
+    character_one.health = 50
+    print(character_one.health)
+    
+    print('\nCreate sword and set as hero weapon')
     sword = Weapon('Sword', 15)
 
-    character.add_to_inventory(sword)
-    character.set_weapon('Sword')
+    character_one.add_to_inventory(sword)
+    character_one.set_weapon('Sword')
 
-    print(character.weapon)
+    print(character_one.weapon)
 
+    print('\nCreate villain and attack')
     character_two = Character('Villain')
     print(character_two.health)
-    character.attack(character_two)
+    character_one.attack(character_two)
     print(character_two.health)
 
-    character_two.attack(character)
-    print(character.health)
+    character_two.attack(character_one)
+    print(character_one.health)
