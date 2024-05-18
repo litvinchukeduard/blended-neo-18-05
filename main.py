@@ -1,5 +1,7 @@
 import copy
 from spells import mirror_clone_shallow, copyramus
+
+from serialization import save_to_json_file
 # Створити клас-персонаж гри, в якого є імʼя, кількість здоровʼя та інвентар. 
 # Дати можливість віднімати здоровʼя, додавати здоровʼя та додавати речі в інвентар
 
@@ -95,6 +97,9 @@ class InventoryItem:
 
     # def __str__(self) -> str:
     #     return f'Item(name={self.name})'
+    # @classmethod
+    # def from_dict(cls, name, data):
+    #     new_item = cls(name, data)
 
 
 class Weapon(InventoryItem):
@@ -157,3 +162,5 @@ if __name__ == '__main__':
 
     character_four = copyramus(character_one)
     print(character_four.name)
+
+    save_to_json_file('character.json', character_four)
