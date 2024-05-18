@@ -20,7 +20,7 @@ class Character:
 # Створити ієрархію предметів, які можна додавати в інвентар. 
 # В базового класу має бути властивість name, для якої задати геттер та сеттер
 
-class Item:
+class InventoryItem:
     def __init__(self, name) -> None:
         self._name = name
 
@@ -35,20 +35,20 @@ class Item:
         self._name = new_name
 
 
-class Weapon(Item):
+class Weapon(InventoryItem):
     def __init__(self, name, damage) -> None:
         super().__init__(name)
         self.damage = damage
 
 
-class Potion(Item):
+class Potion(InventoryItem):
     def __init__(self, name, health_amount) -> None:
         super().__init__(name)
         self.health_amount = health_amount
 
 
 if __name__ == '__main__':
-    item_one = Item('Sword')
+    item_one = InventoryItem('Sword')
     print(item_one.name)
 
     item_one.name = 'Shield'
