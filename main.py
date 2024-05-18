@@ -1,4 +1,5 @@
-
+import copy
+from spells import mirror_clone_shallow, copyramus
 # Створити клас-персонаж гри, в якого є імʼя, кількість здоровʼя та інвентар. 
 # Дати можливість віднімати здоровʼя, додавати здоровʼя та додавати речі в інвентар
 
@@ -55,6 +56,26 @@ class Character:
         else:
             other_character.subtract_health(5)
 
+    def __copy__(self):
+        # Character('fsf')
+        # cls = Character
+        cls = self.__class__
+        new_character = cls.__new__(cls)
+        new_character.__dict__.update(self.__dict__)
+        new_character.__dict__['name'] += ' Shallow copy'
+        # new_character.name += ' Shallow copy'
+        return new_character
+    
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        new_character = cls.__new__(cls)
+        memo[id(self)] = new_character
+        for k, v in self.__dict__.items():
+            # new_character.__dict__[k] = copy.deepcopy(v, memo)
+            setattr(new_character, k, copy.deepcopy(v, memo))
+        new_character.name += ' Evil clone'
+        return new_character
+
 # Створити ієрархію предметів, які можна додавати в інвентар. 
 # В базового класу має бути властивість name, для якої задати геттер та сеттер
 
@@ -72,8 +93,8 @@ class InventoryItem:
         # print('Using item setter')
         self._name = new_name
 
-    def __str__(self) -> str:
-        return f'Item(name={self.name})'
+    # def __str__(self) -> str:
+    #     return f'Item(name={self.name})'
 
 
 class Weapon(InventoryItem):
@@ -90,6 +111,7 @@ class Potion(InventoryItem):
 
 if __name__ == '__main__':
     print('Create items')
+    # InventoryItem.__new__(InventoryItem)
     item_one = InventoryItem('Sword')
     print(item_one.name)
 
@@ -120,3 +142,18 @@ if __name__ == '__main__':
 
     character_two.attack(character_one)
     print(character_one.health)
+
+
+    # print(InventoryItem.__new__(InventoryItem).name)
+    # item = InventoryItem('Sword')
+    # print(item.__dict__)
+    # # item.__dict__.update({'damage', 15})
+    # item.__dict__['damage'] = 15
+    # print(item.__dict__)
+    # print(item.damage)
+
+    character_three = mirror_clone_shallow(character_one)
+    print(character_three.name)
+
+    character_four = copyramus(character_one)
+    print(character_four.name)
