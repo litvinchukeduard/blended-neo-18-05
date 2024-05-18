@@ -5,15 +5,21 @@
 class Character:
     def __init__(self, name, health=100):
         self.name = name
-        self._health = health
+        # self._health = Character.limit_health_amount(health)
+        self.health = health
         self.inventory = []
+
+    # @staticmethod
+    # def limit_health_amount(amount):
+    #     return min(amount, 100)
+    # @classmethod
 
     @property
     def health(self):
         return self._health
 
     @health.setter
-    def set_health(self, amount):
+    def health(self, amount):
         # if amount > 100:
         #     amount = 100
         self._health = min(amount, 100)
@@ -63,3 +69,10 @@ if __name__ == '__main__':
 
     item_one.name = 'Shield'
     print(item_one.name)
+
+    character_one = Character('Hero')
+    print(character_one.health)
+    character_one.health = 120
+    print(character_one.health)
+    character_one.health = 50
+    print(character_one.health)
