@@ -8,6 +8,22 @@ class Character:
         # self._health = Character.limit_health_amount(health)
         self.health = health
         self.inventory = []
+        self._weapon = None
+
+    @property
+    def weapon(self):
+        return self._weapon
+    
+    # @weapon.setter
+    def set_weapon(self, weapon_name: str):
+        try:
+            weapon = next(filter(lambda item: item.name == weapon_name, self.inventory))
+            self._weapon = weapon
+        except StopIteration:
+            pass
+        # for item in self.inventory:
+        #     if item.name == weapon_name:
+        #         self._weapon = item
 
     # @staticmethod
     # def limit_health_amount(amount):
@@ -27,16 +43,22 @@ class Character:
     def add_health(self, amount):
         self._health += amount
 
-    def substract_health(self, amount):
-        self._health -= amount
+    def subtract_health(self, amount):
+        self.health -= amount
 
     def add_to_inventory(self, item):
         self.inventory.append(item)
 
+    def attack(self, other_character):
+        if self.weapon is not None:
+            other_character.subtract_health(self.weapon.damage)
+        else:
+            other_character.subtract_health(5)
+
 # Створити ієрархію предметів, які можна додавати в інвентар. 
 # В базового класу має бути властивість name, для якої задати геттер та сеттер
 
-class Item:
+class InventoryItem:
     def __init__(self, name) -> None:
         self._name = name
 
@@ -50,29 +72,51 @@ class Item:
         # print('Using item setter')
         self._name = new_name
 
+    def __str__(self) -> str:
+        return f'Item(name={self.name})'
 
-class Weapon(Item):
+
+class Weapon(InventoryItem):
     def __init__(self, name, damage) -> None:
         super().__init__(name)
         self.damage = damage
 
 
-class Potion(Item):
+class Potion(InventoryItem):
     def __init__(self, name, health_amount) -> None:
         super().__init__(name)
         self.health_amount = health_amount
 
 
 if __name__ == '__main__':
-    item_one = Item('Sword')
+    print('Create items')
+    item_one = InventoryItem('Sword')
     print(item_one.name)
 
     item_one.name = 'Shield'
     print(item_one.name)
 
+    print('\nCreate hero and set health')
     character_one = Character('Hero')
     print(character_one.health)
     character_one.health = 120
     print(character_one.health)
     character_one.health = 50
+    print(character_one.health)
+    
+    print('\nCreate sword and set as hero weapon')
+    sword = Weapon('Sword', 15)
+
+    character_one.add_to_inventory(sword)
+    character_one.set_weapon('Sword')
+
+    print(character_one.weapon)
+
+    print('\nCreate villain and attack')
+    character_two = Character('Villain')
+    print(character_two.health)
+    character_one.attack(character_two)
+    print(character_two.health)
+
+    character_two.attack(character_one)
     print(character_one.health)
