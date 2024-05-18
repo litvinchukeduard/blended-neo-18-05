@@ -5,14 +5,24 @@
 class Character:
     def __init__(self, name, health=100):
         self.name = name
-        self.health = health
+        self._health = health
         self.inventory = []
 
+    @property
+    def health(self):
+        return self._health
+
+    @health.setter
+    def set_health(self, amount):
+        # if amount > 100:
+        #     amount = 100
+        self._health = min(amount, 100)
+
     def add_health(self, amount):
-        self.health += amount
+        self._health += amount
 
     def substract_health(self, amount):
-        self.health -= amount
+        self._health -= amount
 
     def add_to_inventory(self, item):
         self.inventory.append(item)
