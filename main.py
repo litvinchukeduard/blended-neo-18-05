@@ -7,15 +7,37 @@ class Character:
         self.name = name
         self.health = health
         self.inventory = []
+        self._weapon = None
+
+    @property
+    def weapon(self):
+        return self._weapon
+    
+    # @weapon.setter
+    def set_weapon(self, weapon_name: str):
+        try:
+            weapon = next(filter(lambda item: item.name == weapon_name, self.inventory))
+            self._weapon = weapon
+        except StopIteration:
+            pass
+        # for item in self.inventory:
+        #     if item.name == weapon_name:
+        #         self._weapon = item
 
     def add_health(self, amount):
         self.health += amount
 
-    def substract_health(self, amount):
+    def subtract_health(self, amount):
         self.health -= amount
 
     def add_to_inventory(self, item):
         self.inventory.append(item)
+
+    def attack(self, other_character):
+        if self.weapon is not None:
+            other_character.subtract_health(self.weapon.damage)
+        else:
+            other_character.subtract_health(5)
 
 # Створити ієрархію предметів, які можна додавати в інвентар. 
 # В базового класу має бути властивість name, для якої задати геттер та сеттер
@@ -33,6 +55,9 @@ class InventoryItem:
     def name(self, new_name):
         # print('Using item setter')
         self._name = new_name
+
+    def __str__(self) -> str:
+        return f'Item(name={self.name})'
 
 
 class Weapon(InventoryItem):
@@ -53,3 +78,19 @@ if __name__ == '__main__':
 
     item_one.name = 'Shield'
     print(item_one.name)
+
+    character = Character('Hero')
+    sword = Weapon('Sword', 15)
+
+    character.add_to_inventory(sword)
+    character.set_weapon('Sword')
+
+    print(character.weapon)
+
+    character_two = Character('Villain')
+    print(character_two.health)
+    character.attack(character_two)
+    print(character_two.health)
+
+    character_two.attack(character)
+    print(character.health)
